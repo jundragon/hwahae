@@ -1,3 +1,3 @@
-web: gunicorn myapp.wsgi --log-file -
-migrate: python manage.py migrate --settings=myapp.settings.production
-seed: python manage.py loaddata myapp/item/fixtures/items-data.json
+web: gunicorn hwahae_api.wsgi --log-file -
+migrate: python manage.py migrate --settings=hwahae_api.settings.production
+seed: python manage.py loaddata hwahae_api/item/fixtures/items-data.json
