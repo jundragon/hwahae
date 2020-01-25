@@ -14,4 +14,3 @@ class IngredientSerializerTest(TestCase):
         self.assertEqual(
             self.serializer.data["name"], "테스트용 성분", f"{self.serializer.data}"
         )
-        pass
