@@ -31,16 +31,26 @@ ALLOWED_HOSTS = ["*"]
 
 # Application definition
 
-INSTALLED_APPS = [
+DJANGO_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "hwahae_api.home",
-    "hwahae_api.item",
 ]
+
+THIRD_PARTY_APPS = [
+    "rest_framework",
+]
+
+PROJECT_APPS = [
+    "hwahae_api.core",
+    "hwahae_api.products",
+    "hwahae_api.ingredients",
+]
+
+INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + PROJECT_APPS
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
