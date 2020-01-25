@@ -19,7 +19,7 @@ class IngredientModelTest(TestCase):
         self.assertEqual(saved_ingredients.count(), 2)
 
         first_ingredient_saved = saved_ingredients[0]
-        second_ingreddient_saved = saved_ingredients[1]
+        second_ingredient_saved = saved_ingredients[1]
 
         self.assertEqual(first_ingredient_saved.name, "첫번째")
-        self.assertEqual(second_ingreddient_saved.name, "두번째")
+        self.assertEqual(second_ingredient_saved.name, "두번째")
