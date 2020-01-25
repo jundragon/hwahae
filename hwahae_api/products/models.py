@@ -26,7 +26,7 @@ class Product(core_models.TimeStampedModel):
 
     image_id = models.CharField(max_length=80)
     name = models.CharField(max_length=32)
-    price = models.IntegerField(help_text="KRW")
+    price = models.IntegerField(help_text="KRW", default=0)
     gender = models.CharField(
         max_length=10, choices=GENDER_CHOICES, default=GENDER_ALL,
     )
@@ -36,7 +36,7 @@ class Product(core_models.TimeStampedModel):
     ingredients = models.ManyToManyField(
         "ingredients.Ingredient", related_name="products"
     )
-    monthly_sales = models.IntegerField(help_text="이번 달 판매 수량")
+    monthly_sales = models.IntegerField(help_text="이번 달 판매 수량", default=0)
 
     def __str__(self):
         return self.name
