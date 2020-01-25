@@ -12,25 +12,44 @@
 from django.core.management import call_command
 from django.test import TestCase
 from hwahae_api.ingredients.models import Ingredient
+from hwahae_api.products.models import Product
 
 
-class IngredientSeedDataFunctionalTest(TestCase):
-    def setUp(self):
+class SeedDataFunctionalTest(TestCase):
+
+    """ 상품과 성분 json 데이터 입력을 테스트 합니다 """
+
+    @classmethod
+    def setUpTestData(cls):
         call_command(
             "seed_ingredients", "hwahae_api/ingredients/fixtures/ingredient-data.json"
         )
+        call_command("seed_products", "hwahae_api/products/fixtures/item-data.json")
 
-    # def test_스모크(self):
-    #     self.assertEqual(1, 2, "당연히 실패")
-    #     pass
-
-    def test_데이터_1000개_생성_확인(self):
+    def test_성분_데이터_1000개_생성_확인(self):
         count = Ingredient.objects.count()
         self.assertEqual(count, 1000, f"데이터 생성 개수 : {count} ")
 
-    def test_데이터_확인(self):
+    def test_성분_데이터_확인(self):
         first = Ingredient.objects.first()
         self.assertEqual(first.name, "foundation")
         self.assertEqual(first.oily, 0)
         self.assertEqual(first.dry, 0)
         self.assertEqual(first.sensitive, 1)
+
+    def test_상품_데이터_1000개_생성_확인(self):
+        count = Product.objects.count()
+        self.assertEqual(count, 1000, f"데이터 생성 개수 : {count} ")
+
+    def test_상품_데이터_확인(self):
+        first = Product.objects.first()
+
+        print(first.ingredients)
+
+        self.assertEqual(first.name, "리더스 링클 콜라겐 마스크")
+        self.assertEqual(first.image_id, "a18de8cd-c730-4f36-b16f-665cca908c11")
+        self.assertEqual(first.price, 520)
+        self.assertEqual(first.gender, "female")
+        self.assertEqual(str(first.category), "suncare")
+        self.assertEqual(first.monthly_sales, 5196)
+        self.assertEqual(first.ingredients.count(), 5)

@@ -30,7 +30,7 @@ class Command(BaseCommand):
         seeds = json.load(f)
 
         # 기존 데이터 삭제
-        Ingredient.objects.all().delete()
+        # Ingredient.objects.all().delete()
 
         for seed in seeds:
 
