@@ -10,11 +10,7 @@ class CategorySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Category
-        exclude = (
-            "id",
-            "created",
-            "updated",
-        )
+        fields = ("name",)
 
 
 class ProductSerializer(serializers.ModelSerializer):
@@ -23,7 +19,7 @@ class ProductSerializer(serializers.ModelSerializer):
 
     ingredients = IngredientSerializer(read_only=True, many=True)
     monthlySales = serializers.IntegerField(source="monthly_sales")
-    category = CategorySerializer()
+    # category = CategorySerializer()
     imgUrl = serializers.SerializerMethodField()
 
     def to_representation(self, instance):
@@ -41,13 +37,13 @@ class ProductSerializer(serializers.ModelSerializer):
         model = Product
         fields = (
             "id",
+            "imgUrl",
             "name",
             "price",
             "ingredients",
             "monthlySales",
-            "score_oily",
-            "score_dry",
-            "score_sensitive",
-            "category",
-            "imgUrl",
+            # "score_oily",
+            # "score_dry",
+            # "score_sensitive",
+            # "category",
         )

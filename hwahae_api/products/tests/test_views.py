@@ -49,7 +49,7 @@ class ProductListTest(APITestCase):
             f"response = {response.status_code}",
         )
 
-        self.assertEqual(response.data[0]["score_oily"], 2, "피부 타입 정렬 오류")
+        self.assertEqual(response.data[0]["name"], product.name, "피부 타입 정렬 오류")
 
     def test_피부타입점수_동일할때_가격_오름차순_정렬(self):
         # /products?skin_type=oily
@@ -160,8 +160,6 @@ class ProductListTest(APITestCase):
         banana.ingredients.add(ingredient2)
 
         response = self.client.get(self.url + URL_QUERY, format="json")
-
-        print(response.data)
 
         for res in response.data:
             self.assertIn("oily", res["ingredients"], "다수개의 포함성분 필터 오류")
