@@ -32,6 +32,11 @@ class ProductList(ListAPIView):
         if category is not None:
             products = products.filter(category__name=category)
 
+        exclude_ingredient = self.request.query_params.get("exclude_ingredient", None)
+
+        if exclude_ingredient is not None:
+            products = products.exclude(ingredients__name=exclude_ingredient)
+
         return products
 
 
