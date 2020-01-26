@@ -29,7 +29,7 @@ class ProductListTest(APITestCase):
         serializer = ProductSerializer(products, many=True)
         self.assertEqual(response.data, serializer.data, f"{response.data}")
 
-    def test_피부타입_점수_내림차순_정렬(self):
+    def test_피부타입점수_내림차순_정렬(self):
         # /products?skin_type=oily
         ORDERING_QUERY = "?skin_type=oily"
 
@@ -51,10 +51,29 @@ class ProductListTest(APITestCase):
 
         self.assertEqual(response.data[0]["score_oily"], 2, "피부 타입 정렬 오류")
 
-    def test_피부타입_동일할때_가격_오름차순_정렬(self):
+    def test_피부타입점수_동일할때_가격_오름차순_정렬(self):
         # /products?skin_type=oily
+        ORDERING_QUERY = "?skin_type=oily"
 
-        pass
+        Ingredient.objects.create(name="oily1", oily=1)
+        Ingredient.objects.create(name="oily2", oily=1)
+        Ingredient.objects.create(name="dry1", dry=1)
+
+        for product in Product.objects.all():
+            for ingredient in Ingredient.objects.all():
+                product.ingredients.add(ingredient)
+
+        product = Product.objects.all()[0]
+        product.price = 1000
+
+        response = self.client.get(self.url + ORDERING_QUERY, format="json")
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_200_OK,
+            f"response = {response.status_code}",
+        )
+
+        self.assertLess(response.data[0]["price"], 1000, "낮은 가격 정렬 오류")
 
     def test_필터(self):
         # 제외 성분
