@@ -22,20 +22,28 @@ class ProductList(ListAPIView):
     def get_queryset(self):
         skin_type = self.request.query_params.get("skin_type", None)
 
+        # 피부타입(내림차순) & 가격(오름차순) 정렬
         if skin_type is None:
             products = Product.objects.all()
         else:
             products = Product.objects.skin_type(skin_type)
 
+        # 카테고리 필터
         category = self.request.query_params.get("category", None)
 
         if category is not None:
             products = products.filter(category__name=category)
 
+        # 제외 성분 필터
         exclude_ingredient = self.request.query_params.get("exclude_ingredient", None)
 
         if exclude_ingredient is not None:
             products = products.exclude(ingredients__name=exclude_ingredient)
+
+        # 포함 성분 필터
+        include_ingredients = self.request.query_params.get("include_ingredient", None)
+        if include_ingredients is not None:
+            products = products.filter(ingredients__name=include_ingredients)
 
         return products
 

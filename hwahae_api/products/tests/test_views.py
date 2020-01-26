@@ -119,7 +119,28 @@ class ProductListTest(APITestCase):
             self.assertNotIn("oily", res["ingredients"], "제외성분 필터 오류")
 
     def test_포함성분_필터(self):
-        pass
+        # /products?skin_type=oily&include_ingredient=oily
+        URL_QUERY = "?skin_type=oily&include_ingredient=oily"
+
+        ingredient1 = Ingredient.objects.create(name="oily", oily=1)
+        ingredient2 = Ingredient.objects.create(name="dry", dry=1)
+        ingredient3 = Ingredient.objects.create(name="sensitive", sensitive=1)
+
+        product = Product.objects.first()
+        product.ingredients.add(ingredient1)
+        product.ingredients.add(ingredient2)
+        product.ingredients.add(ingredient3)
+
+        # 제외 성분
+        response = self.client.get(self.url + URL_QUERY, format="json")
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_200_OK,
+            f"response = {response.status_code}",
+        )
+
+        for res in response.data:
+            self.assertIn("oily", res["ingredients"], "포함성분 필터 오류")
 
     def test_RESPONSE_형식(self):
         pass
