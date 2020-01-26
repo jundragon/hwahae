@@ -115,6 +115,14 @@ class ProductListTest(APITestCase):
             f"response = {response.status_code}",
         )
 
+        # 제외 성분 콤마로 구분
+        URL_QUERY = URL_QUERY + ",dry"
+
+        banana = Product.objects.create(name="banana")
+        banana.ingredients.add(ingredient2)
+
+        response = self.client.get(self.url + URL_QUERY, format="json")
+
         for res in response.data:
             self.assertNotIn("oily", res["ingredients"], "제외성분 필터 오류")
 
