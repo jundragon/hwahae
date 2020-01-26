@@ -27,6 +27,11 @@ class ProductList(ListAPIView):
         else:
             products = Product.objects.skin_type(skin_type)
 
+        category = self.request.query_params.get("category", None)
+
+        if category is not None:
+            products = products.filter(category__name=category)
+
         return products
 
 
