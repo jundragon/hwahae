@@ -5,20 +5,15 @@ from hwahae_api.products.models import Product
 from hwahae_api.ingredients.models import Ingredient
 from hwahae_api.products.serializers import ProductSerializer
 
+TEST_THUMBNAIL = "https://grepp-programmers-challenges.s3.ap-northeast-2.amazonaws.com/2020-birdview/thumbnail/a18de8cd-c730-4f36-b16f-665cca908c11.jpg"
+
 
 class ProductListTest(APITestCase):
     url = reverse("products:list")
 
     def setUp(self):
-        Ingredient.objects.create(name="executrix")
-        Ingredient.objects.create(name="provision")
-        Ingredient.objects.create(name="multimedia")
 
-        coffee = Product.objects.create(name="coffee")
-
-        for ingredient in Ingredient.objects.all():
-            coffee.ingredients.add(ingredient)
-
+        Product.objects.create(name="coffee")
         Product.objects.create(name="potato")
 
         self.assertEqual(Product.objects.count(), 2)
@@ -43,7 +38,15 @@ class ProductListTest(APITestCase):
         """
         TEST_INGREDIENT = "executrix,provision,multimedia"
 
-        product = Product.objects.get(name="coffee")
+        Ingredient.objects.create(name="executrix")
+        Ingredient.objects.create(name="provision")
+        Ingredient.objects.create(name="multimedia")
+
+        product = Product.objects.first()
+
+        for ingredient in Ingredient.objects.all():
+            product.ingredients.add(ingredient)
+
         serializer = ProductSerializer(product)
 
         self.assertEqual(
@@ -53,6 +56,16 @@ class ProductListTest(APITestCase):
         )
 
     def test_이미지_URL(self):
+
+        product = Product.objects.first()
+        product.image_id = "a18de8cd-c730-4f36-b16f-665cca908c11"
+
+        serializer = ProductSerializer(product)
+
+        self.assertEqual(
+            serializer.data["imgUrl"], TEST_THUMBNAIL, serializer.data["imgUrl"],
+        )
+
         pass
 
     def test_RESPONSE_형식(self):

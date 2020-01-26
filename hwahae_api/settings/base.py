@@ -117,6 +117,15 @@ USE_TZ = True
 STATIC_ROOT = os.path.join(PROJECT_DIR, "staticfiles")
 STATIC_URL = "/static/"
 
+# AWS
+AWS_STORAGE_BUCKET_NAME = "grepp-programmers-challenges"
+AWS_S3_CUSTOM_DOMAIN = f"{AWS_STORAGE_BUCKET_NAME}.s3.ap-northeast-2.amazonaws.com"
+AWS_S3_APP_NAME = "2020-birdview"
+
+# Full image & Thumbnail image
+FULL_IMAGE_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/{AWS_S3_APP_NAME}/image"
+THUMBNAIL_IMAGE_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/{AWS_S3_APP_NAME}/thumbnail"
+
 # Extra places for collectstatic to find static files.
 STATICFILES_DIRS = (os.path.join(PROJECT_DIR, "static"),)
 
@@ -127,4 +136,5 @@ STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "PAGE_SIZE": 50,
+    "ORDERING_PARAM": "skin_type",
 }
