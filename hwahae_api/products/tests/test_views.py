@@ -115,6 +115,9 @@ class ProductListTest(APITestCase):
             f"response = {response.status_code}",
         )
 
+        for res in response.data:
+            self.assertNotIn("oily", res["ingredients"], "제외성분 필터 오류")
+
         # 제외 성분 콤마로 구분
         URL_QUERY = URL_QUERY + ",dry"
 
@@ -124,7 +127,7 @@ class ProductListTest(APITestCase):
         response = self.client.get(self.url + URL_QUERY, format="json")
 
         for res in response.data:
-            self.assertNotIn("oily", res["ingredients"], "제외성분 필터 오류")
+            self.assertNotIn("oily", res["ingredients"], "다수개의 제외성분 필터 오류")
 
     def test_포함성분_필터(self):
         # /products?skin_type=oily&include_ingredient=oily
@@ -139,7 +142,7 @@ class ProductListTest(APITestCase):
         product.ingredients.add(ingredient2)
         product.ingredients.add(ingredient3)
 
-        # 제외 성분
+        # 포함 성분
         response = self.client.get(self.url + URL_QUERY, format="json")
         self.assertEqual(
             response.status_code,
@@ -150,5 +153,16 @@ class ProductListTest(APITestCase):
         for res in response.data:
             self.assertIn("oily", res["ingredients"], "포함성분 필터 오류")
 
-    def test_RESPONSE_형식(self):
-        pass
+        # 포함 성분 콤마로 구분
+        URL_QUERY = URL_QUERY + ",dry"
+
+        banana = Product.objects.create(name="banana")
+        banana.ingredients.add(ingredient2)
+
+        response = self.client.get(self.url + URL_QUERY, format="json")
+
+        print(response.data)
+
+        for res in response.data:
+            self.assertIn("oily", res["ingredients"], "다수개의 포함성분 필터 오류")
+            self.assertIn("dry", res["ingredients"], "다수개의 포함성분 필터 오류")

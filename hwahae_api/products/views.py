@@ -39,13 +39,16 @@ class ProductList(ListAPIView):
 
         if exclude_ingredients is not None:
             exclude_ingredients = exclude_ingredients.split(",")
-            for ex in exclude_ingredients:
-                products = products.exclude(ingredients__name=ex)
+            for exclude in exclude_ingredients:
+                products = products.exclude(ingredients__name=exclude)
 
         # 포함 성분 필터
         include_ingredients = self.request.query_params.get("include_ingredient", None)
+
         if include_ingredients is not None:
-            products = products.filter(ingredients__name=include_ingredients)
+            include_ingredients = include_ingredients.split(",")
+            for include in include_ingredients:
+                products = products.filter(ingredients__name=include)
 
         return products
 
