@@ -69,4 +69,3 @@ class ProductSerializerTest(TestCase):
         self.assertEqual(
             serializer.data["imgUrl"], TEST_THUMBNAIL, serializer.data["imgUrl"],
         )
-

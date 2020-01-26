@@ -19,6 +19,16 @@ class ProductList(ListAPIView):
     serializer_class = ProductSerializer
     pagination_class = NoneInfoPagination
 
+    def get_queryset(self):
+        skin_type = self.request.query_params.get("skin_type", None)
+
+        if skin_type is None:
+            products = Product.objects.all()
+        else:
+            products = Product.objects.skin_type(skin_type)
+
+        return products
+
 
 class ProductDetail(RetrieveAPIView):
 

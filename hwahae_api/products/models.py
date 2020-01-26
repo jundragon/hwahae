@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Sum
 from hwahae_api.core import models as core_models
 
 
@@ -8,6 +9,16 @@ class Category(core_models.AbstractItem):
 
     class Meta:
         verbose_name_plural = "Categories"
+
+
+class ProductQuerySet(models.QuerySet):
+
+    """ Custom Product QuerySet Definition """
+
+    def skin_type(self, skin_type):
+        order_string = f"ingredients__{skin_type}"
+
+        return self.annotate(score=Sum(order_string)).order_by("-score", "price")
 
 
 class Product(core_models.TimeStampedModel):
@@ -37,6 +48,8 @@ class Product(core_models.TimeStampedModel):
         "ingredients.Ingredient", related_name="products"
     )
     monthly_sales = models.IntegerField(help_text="이번 달 판매 수량", default=0)
+
+    objects = ProductQuerySet.as_manager()
 
     def __str__(self):
         return self.name
