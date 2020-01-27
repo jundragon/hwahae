@@ -36,7 +36,7 @@ class Product(core_models.TimeStampedModel):
     )
 
     image_id = models.CharField(max_length=80)
-    name = models.CharField(max_length=32)
+    name = models.CharField(max_length=80)
     price = models.IntegerField(help_text="KRW", default=0)
     gender = models.CharField(
         max_length=10, choices=GENDER_CHOICES, default=GENDER_ALL,

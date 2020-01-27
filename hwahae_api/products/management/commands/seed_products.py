@@ -23,7 +23,7 @@ class Command(BaseCommand):
         seeds = json.load(f)
 
         # 기존 데이터 삭제
-        # Product.objects.all().delete()
+        Product.objects.all().delete()
 
         for seed in seeds:
 
@@ -42,7 +42,7 @@ class Command(BaseCommand):
             for ingredient in seed["ingredients"].split(","):
                 try:
                     product.ingredients.add(Ingredient.objects.get(name=ingredient))
-                except ObjectDoesNotExist:
+                except Ingredient.ObjectDoesNotExist:
                     # TODO: log 남기기
                     pass
 
