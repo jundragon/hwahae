@@ -49,10 +49,12 @@ class ProductDetailTest(APITestCase):
 
     def test_상품_정보_조회_응답_시리얼라이저(self):
 
+        URL_QUERY = "?skin_type=oily"
+
         products = Product.objects.all()
         serializer = ProductDetailSerializer(products, many=True)
 
-        response = self.client.get(self.url(products[0].id), format="json")
+        response = self.client.get(self.url(products[0].id) + URL_QUERY, format="json")
         self.assertEqual(
             response.status_code, status.HTTP_200_OK, "응답 상태 확인",
         )
@@ -63,8 +65,10 @@ class ProductDetailTest(APITestCase):
 
     def test_상품_상세_정보_조회(self):
 
+        URL_QUERY = "?skin_type=oily"
+
         product = Product.objects.first()
-        response = self.client.get(self.url(product.id), format="json")
+        response = self.client.get(self.url(product.id) + URL_QUERY, format="json")
 
         self.assertEqual(response.data[0]["id"], product.id, "상세 정보 조회 오류")
 
