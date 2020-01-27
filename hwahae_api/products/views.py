@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.shortcuts import render
 from rest_framework.generics import ListAPIView, RetrieveAPIView
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
@@ -8,6 +9,11 @@ from .serializers import (
     ProductDetailSerializer,
     ProductRecommendSerializer,
 )
+
+
+# Create your views here.
+def index(request):
+    return render(request, "index.html", {})
 
 
 class NoneInfoPagination(PageNumberPagination):
