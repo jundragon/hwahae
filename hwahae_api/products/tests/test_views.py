@@ -3,7 +3,7 @@ from rest_framework.test import APITestCase
 from rest_framework import status
 from hwahae_api.products.models import Product, Category
 from hwahae_api.ingredients.models import Ingredient
-from hwahae_api.products.serializers import ProductSerializer
+from hwahae_api.products.serializers import ProductSerializer, ProductDetailSerializer
 
 
 class ProductListTest(APITestCase):
@@ -164,3 +164,70 @@ class ProductListTest(APITestCase):
         for res in response.data:
             self.assertIn("oily", res["ingredients"], "다수개의 포함성분 필터 오류")
             self.assertIn("dry", res["ingredients"], "다수개의 포함성분 필터 오류")
+
+
+class ProductDetailTest(APITestCase):
+    def url(self, pk):
+        return reverse("products:detail", kwargs={"pk": pk})
+
+    def setUp(self):
+
+        category = Category.objects.create(name="skincare")
+        self.sample_data = {
+            "name": "coffee",
+            "price": 1000,
+            "gender": "all",
+            "monthly_sales": 1234,
+            "image_id": "a18de8cd-c730-4f36-b16f-665cca908c11",
+            "category": category,
+        }
+
+        Ingredient.objects.create(name="oily", oily=1)
+        Ingredient.objects.create(name="dry", dry=1)
+        Ingredient.objects.create(name="sensitive", sensitive=1)
+
+        self.sample_product = Product.objects.create(**self.sample_data)
+        for ingredient in Ingredient.objects.all():
+            self.sample_product.ingredients.add(ingredient)
+
+        Product.objects.create(name="potato", price=50, category=category)
+        Product.objects.create(name="banana", price=100, category=category)
+        Product.objects.create(name="melon", price=200, category=category)
+        Product.objects.create(name="chicken", price=200, category=category)
+
+        self.assertEqual(Product.objects.count(), 5)
+
+    def test_상품_정보_조회_응답_시리얼라이저(self):
+
+        response = self.client.get(self.url(pk=1), format="json")
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_200_OK,
+            f"response = {response.status_code}",
+        )
+
+        products = Product.objects.all()
+        serializer = ProductDetailSerializer(products, many=True)
+        self.assertEqual(response.data, serializer.data[0], f"{response.data}")
+
+    def test_상품_상세_정보_조회(self):
+
+        response = self.client.get(self.url(pk=1), format="json")
+        self.assertEqual(
+            response.status_code, status.HTTP_200_OK, response.status_code,
+        )
+
+        TEST_THUMBNAIL = "https://grepp-programmers-challenges.s3.ap-northeast-2.amazonaws.com/2020-birdview/thumbnail/a18de8cd-c730-4f36-b16f-665cca908c11.jpg"
+
+        test_data = {
+            "id": 1,
+            "imgUrl": TEST_THUMBNAIL,
+            "name": self.sample_data["name"],
+            "price": self.sample_data["price"],
+            "gender": self.sample_data["gender"],
+            "category": "skincare",
+            "ingredients": "oily,dry,sensitive",
+            "monthlySales": self.sample_data["monthly_sales"],
+        }
+
+        self.assertEqual(response.data, test_data, "예상한 응답과 다릅니다")

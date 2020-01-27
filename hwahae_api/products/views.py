@@ -2,7 +2,7 @@ from rest_framework.generics import ListAPIView, RetrieveAPIView
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from .models import Product
-from .serializers import ProductSerializer
+from .serializers import ProductSerializer, ProductDetailSerializer
 
 
 class NoneInfoPagination(PageNumberPagination):
@@ -57,4 +57,5 @@ class ProductDetail(RetrieveAPIView):
 
     """ Product Detail Definition """
 
-    pass
+    queryset = Product.objects.all()
+    serializer_class = ProductDetailSerializer

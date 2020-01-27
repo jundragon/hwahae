@@ -8,16 +8,11 @@ TEST_THUMBNAIL = "https://grepp-programmers-challenges.s3.ap-northeast-2.amazona
 
 
 class CategorySerializerTest(TestCase):
-    def setUp(self):
-        self.model = Category()
-        self.model.name = "테스트용 카테고리"
-        self.serializer = CategorySerializer(instance=self.model)
-
     def test_data_확인(self):
+        category = Category.objects.create(name="테스트용 카테고리")
+        serializer = CategorySerializer(category)
 
-        self.assertEqual(
-            self.serializer.data["name"], "테스트용 카테고리", f"{self.serializer.data}"
-        )
+        self.assertEqual(str(serializer.instance), "테스트용 카테고리", serializer)
 
 
 class ProductSerializerTest(TestCase):

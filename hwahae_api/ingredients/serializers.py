@@ -6,8 +6,8 @@ class IngredientSerializer(serializers.ModelSerializer):
 
     """ Ingredient Serializer Definition """
 
-    def to_representation(self, value):
-        return value.name
+    def to_representation(self, instance):
+        return instance.name
 
     class Meta:
         model = Ingredient
