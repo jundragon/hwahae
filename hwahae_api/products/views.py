@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.shortcuts import render
+from django.http import HttpResponseBadRequest
 from rest_framework.generics import ListAPIView, RetrieveAPIView
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
@@ -37,7 +38,7 @@ class ProductList(ListAPIView):
 
         # 피부타입(내림차순) & 가격(오름차순) 정렬
         if skin_type is None:
-            products = Product.objects.all()
+            raise HttpResponseBadRequest("Missing required parameters")
         else:
             products = Product.objects.skin_type(skin_type)
 
@@ -86,7 +87,7 @@ class ProductDetail(RetrieveAPIView):
         skin_type = self.request.query_params.get("skin_type", None)
         # 피부타입(내림차순) & 가격(오름차순) 정렬
         if skin_type is None:
-            products = Product.objects.all()
+            raise HttpResponseBadRequest("Missing required parameters")
         else:
             products = Product.objects.skin_type(skin_type)
 
