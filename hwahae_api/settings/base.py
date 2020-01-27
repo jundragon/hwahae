@@ -136,5 +136,8 @@ STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "PAGE_SIZE": 50,
-    "ORDERING_PARAM": "skin_type",
 }
+
+# Custom config
+
+RECOMMEND_NUM = 3  # detail view 추천 상품 개수

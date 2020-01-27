@@ -87,3 +87,23 @@ class ProductDetailSerializer(serializers.ModelSerializer):
             # "score_dry",
             # "score_sensitive",
         )
+
+
+class ProductRecommendSerializer(serializers.ModelSerializer):
+
+    """ Product Detail Serializer Definition """
+
+    imgUrl = serializers.SerializerMethodField()
+
+    def get_imgUrl(self, obj):
+        thumbnail_url = getattr(settings, "THUMBNAIL_IMAGE_URL")
+        return f"{thumbnail_url}/{obj.image_id}.jpg"
+
+    class Meta:
+        model = Product
+        fields = (
+            "id",
+            "imgUrl",
+            "name",
+            "price",
+        )

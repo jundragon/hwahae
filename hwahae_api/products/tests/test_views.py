@@ -172,13 +172,15 @@ class ProductDetailTest(APITestCase):
 
     def setUp(self):
 
+        SAMPLE_IMAGE_ID = "a18de8cd-c730-4f36-b16f-665cca908c11"
+
         category = Category.objects.create(name="skincare")
         self.sample_data = {
             "name": "coffee",
             "price": 1000,
             "gender": "all",
             "monthly_sales": 1234,
-            "image_id": "a18de8cd-c730-4f36-b16f-665cca908c11",
+            "image_id": SAMPLE_IMAGE_ID,
             "category": category,
         }
 
@@ -190,10 +192,18 @@ class ProductDetailTest(APITestCase):
         for ingredient in Ingredient.objects.all():
             self.sample_product.ingredients.add(ingredient)
 
-        Product.objects.create(name="potato", price=50, category=category)
-        Product.objects.create(name="banana", price=100, category=category)
-        Product.objects.create(name="melon", price=200, category=category)
-        Product.objects.create(name="chicken", price=200, category=category)
+        Product.objects.create(
+            name="potato", price=50, category=category, image_id=SAMPLE_IMAGE_ID
+        )
+        Product.objects.create(
+            name="banana", price=150, category=category, image_id=SAMPLE_IMAGE_ID
+        )
+        Product.objects.create(
+            name="melon", price=100, category=category, image_id=SAMPLE_IMAGE_ID
+        )
+        Product.objects.create(
+            name="chicken", price=200, category=category, image_id=SAMPLE_IMAGE_ID
+        )
 
         self.assertEqual(Product.objects.count(), 5)
 
@@ -208,7 +218,7 @@ class ProductDetailTest(APITestCase):
 
         products = Product.objects.all()
         serializer = ProductDetailSerializer(products, many=True)
-        self.assertEqual(response.data, serializer.data[0], f"{response.data}")
+        self.assertEqual(response.data[0], serializer.data[0], "예상한 응답과 다릅니다")
 
     def test_상품_상세_정보_조회(self):
 
@@ -230,4 +240,23 @@ class ProductDetailTest(APITestCase):
             "monthlySales": self.sample_data["monthly_sales"],
         }
 
-        self.assertEqual(response.data, test_data, "예상한 응답과 다릅니다")
+        self.assertEqual(response.data[0], test_data, "예상한 응답과 다릅니다")
+
+    def test_추천상품정보_조회(self):
+        # /product/1?skin_type=oily
+        URL_QUERY = "?skin_type=oily"
+
+        response = self.client.get(self.url(pk=1) + URL_QUERY, format="json")
+        self.assertEqual(
+            response.status_code, status.HTTP_200_OK, response.status_code,
+        )
+
+        TEST_THUMBNAIL = "https://grepp-programmers-challenges.s3.ap-northeast-2.amazonaws.com/2020-birdview/thumbnail/a18de8cd-c730-4f36-b16f-665cca908c11.jpg"
+
+        test_data1 = {"id": 2, "imgUrl": TEST_THUMBNAIL, "name": "potato", "price": 50}
+        test_data2 = {"id": 4, "imgUrl": TEST_THUMBNAIL, "name": "melon", "price": 100}
+        test_data3 = {"id": 3, "imgUrl": TEST_THUMBNAIL, "name": "banana", "price": 150}
+
+        self.assertEqual(dict(response.data[1]), test_data1, "예상한 응답과 다릅니다")
+        self.assertEqual(dict(response.data[2]), test_data2, "예상한 응답과 다릅니다")
+        self.assertEqual(dict(response.data[3]), test_data3, "예상한 응답과 다릅니다")
