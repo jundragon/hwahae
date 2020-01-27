@@ -24,7 +24,9 @@ class NoneInfoPagination(PageNumberPagination):
 
 class ProductList(ListAPIView):
 
-    """ Product List Definition """
+    """
+    Product List Definition
+    """
 
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
@@ -66,12 +68,16 @@ class ProductList(ListAPIView):
 
 class ProductDetail(RetrieveAPIView):
 
-    """ Product Detail Definition """
+    """
+    Product Detail Definition
+    """
 
+    # lookup_field = "pk"
     queryset = Product.objects.all()
     serializer_class = ProductDetailSerializer
 
     def retrieve(self, request, *args, **kwargs):
+
         recommend_num = getattr(settings, "RECOMMEND_NUM")
 
         instance = self.get_object()

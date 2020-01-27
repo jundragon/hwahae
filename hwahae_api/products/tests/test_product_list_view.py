@@ -34,14 +34,12 @@ class ProductListTest(APITestCase):
         response = self.client.get(self.url, format="json")
 
         self.assertEqual(
-            response.status_code,
-            status.HTTP_200_OK,
-            f"response = {response.status_code}",
+            response.status_code, status.HTTP_200_OK, "응답 상태 확인",
         )
 
         products = Product.objects.all()
         serializer = ProductSerializer(products, many=True)
-        self.assertEqual(response.data, serializer.data, "시리얼라이저 결과와 API 응답 결과 오류")
+        self.assertEqual(response.data, serializer.data, "시리얼라이저 결과와 API 응답 결과 불일치")
 
     def test_피부타입점수_내림차순_정렬(self):
         # /products?skin_type=oily
