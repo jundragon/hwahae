@@ -74,11 +74,12 @@ class ProductDetail(RetrieveAPIView):
         skin_type = self.request.query_params.get("skin_type", None)
         # 피부타입(내림차순) & 가격(오름차순) 정렬
         if skin_type is None:
-            products = Product.objects.all()[:3]
+            products = Product.objects.all()
         else:
             products = Product.objects.skin_type(skin_type)
-            products = products.exclude(id=instance.id)  # 자신은 추천 대상에서 제외
-            products = products[:recommend_num]
+
+        products = products.exclude(id=instance.id)  # 자신은 추천 대상에서 제외
+        products = products[:recommend_num]
 
         recommandation = ProductRecommendSerializer(products, many=True)
 
