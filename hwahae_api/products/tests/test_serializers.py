@@ -1,18 +1,14 @@
 from django.test import TestCase
 from hwahae_api.products.models import Product, Category
 from hwahae_api.ingredients.models import Ingredient
-from hwahae_api.products.serializers import ProductSerializer, CategorySerializer
+from hwahae_api.products.serializers import (
+    ProductSerializer,
+    ProductDetailSerializer,
+    ProductRecommendSerializer,
+)
 
 
 TEST_THUMBNAIL = "https://grepp-programmers-challenges.s3.ap-northeast-2.amazonaws.com/2020-birdview/thumbnail/a18de8cd-c730-4f36-b16f-665cca908c11.jpg"
-
-
-class CategorySerializerTest(TestCase):
-    def test_data_확인(self):
-        category = Category.objects.create(name="테스트용 카테고리")
-        serializer = CategorySerializer(category)
-
-        self.assertEqual(str(serializer.instance), "테스트용 카테고리", serializer)
 
 
 class ProductSerializerTest(TestCase):
@@ -21,14 +17,32 @@ class ProductSerializerTest(TestCase):
         Product.objects.create(name="coffee")
         Product.objects.create(name="potato")
 
-        self.assertEqual(Product.objects.count(), 2)
+        self.assertEqual(Product.objects.count(), 2, "생성 확인")
 
-    def test_data_확인(self):
+    def test_ProductSerializer(self):
 
         products = Product.objects.all()
         serializer = ProductSerializer(products, many=True)
 
-        self.assertEqual(serializer.data[0]["name"], "coffee", f"{serializer.data}")
+        self.assertEqual(serializer.data[0]["name"], "coffee", "ProductSerializer 오류")
+
+    def test_ProductDetailSerializer(self):
+
+        products = Product.objects.all()
+        serializer = ProductDetailSerializer(products, many=True)
+
+        self.assertEqual(
+            serializer.data[0]["name"], "coffee", "ProductDetailSerializer 오류"
+        )
+
+    def test_ProductRecommendSerializer(self):
+
+        products = Product.objects.all()
+        serializer = ProductRecommendSerializer(products, many=True)
+
+        self.assertEqual(
+            serializer.data[0]["name"], "coffee", "ProductRecommendSerializer 오류"
+        )
 
     def test_상품_성분_리스트_문자열_출력(self):
         """
@@ -42,6 +56,7 @@ class ProductSerializerTest(TestCase):
         Ingredient.objects.create(name="multimedia")
 
         product = Product.objects.first()
+        product.category = Category.objects.create(name="skincare")
 
         for ingredient in Ingredient.objects.all():
             product.ingredients.add(ingredient)
@@ -49,9 +64,7 @@ class ProductSerializerTest(TestCase):
         serializer = ProductSerializer(product)
 
         self.assertEqual(
-            serializer.data["ingredients"],
-            TEST_INGREDIENT,
-            f"성분 리스트 출력 형식이 다릅니다 : {serializer.data['ingredients']}",
+            serializer.data["ingredients"], TEST_INGREDIENT, "성분 리스트의 출력 형식 문자열 콤마",
         )
 
     def test_이미지_URL(self):

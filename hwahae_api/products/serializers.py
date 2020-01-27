@@ -1,40 +1,38 @@
 from django.conf import settings
 from rest_framework import serializers
-from hwahae_api.ingredients.serializers import IngredientSerializer
-from .models import Product, Category
+from .models import Product
 
 
-class CategorySerializer(serializers.ModelSerializer):
+class BaseProductSerializer(serializers.ModelSerializer):
+    """
+    Base Product Serializer Definition
+    """
 
-    """ Category Serializer Definition """
-
-    def to_representation(self, instance):
-        return instance.name
-
-    class Meta:
-        model = Category
-        fields = ("name",)
-
-
-class ProductSerializer(serializers.ModelSerializer):
-
-    """ Product Serializer Definition """
-
-    ingredients = IngredientSerializer(read_only=True, many=True)
+    ingredients = serializers.StringRelatedField(many=True)
     monthlySales = serializers.IntegerField(source="monthly_sales")
     imgUrl = serializers.SerializerMethodField()
-
-    def to_representation(self, instance):
-        # ingredients 를 리스트가 아닌 string으로 반환하기 위함
-        representation = super().to_representation(instance)
-        ingredients = representation.pop("ingredients")
-        representation["ingredients"] = ",".join(ingredients)
-
-        return representation
+    category = serializers.StringRelatedField()
 
     def get_imgUrl(self, obj):
         thumbnail_url = getattr(settings, "THUMBNAIL_IMAGE_URL")
         return f"{thumbnail_url}/{obj.image_id}.jpg"
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+
+        # ingredients 를 리스트가 아닌 string으로 반환하기 위함
+        if "ingredients" in representation.keys():
+            ingredients = representation.pop("ingredients")
+            representation["ingredients"] = ",".join(ingredients)
+
+        return representation
+
+
+class ProductSerializer(BaseProductSerializer):
+
+    """
+    Product Serializer Definition
+    """
 
     class Meta:
         model = Product
@@ -45,32 +43,14 @@ class ProductSerializer(serializers.ModelSerializer):
             "price",
             "ingredients",
             "monthlySales",
-            # "score_oily",
-            # "score_dry",
-            # "score_sensitive",
         )
 
 
-class ProductDetailSerializer(serializers.ModelSerializer):
+class ProductDetailSerializer(BaseProductSerializer):
 
-    """ Product Detail Serializer Definition """
-
-    ingredients = IngredientSerializer(read_only=True, many=True)
-    monthlySales = serializers.IntegerField(source="monthly_sales")
-    category = CategorySerializer(read_only=True)
-    imgUrl = serializers.SerializerMethodField()
-
-    def to_representation(self, instance):
-        # ingredients 를 리스트가 아닌 string으로 반환하기 위함
-        representation = super().to_representation(instance)
-        ingredients = representation.pop("ingredients")
-        representation["ingredients"] = ",".join(ingredients)
-
-        return representation
-
-    def get_imgUrl(self, obj):
-        thumbnail_url = getattr(settings, "THUMBNAIL_IMAGE_URL")
-        return f"{thumbnail_url}/{obj.image_id}.jpg"
+    """
+    Product Detail Serializer Definition
+    """
 
     class Meta:
         model = Product
@@ -83,21 +63,12 @@ class ProductDetailSerializer(serializers.ModelSerializer):
             "category",
             "ingredients",
             "monthlySales",
-            # "score_oily",
-            # "score_dry",
-            # "score_sensitive",
         )
 
 
-class ProductRecommendSerializer(serializers.ModelSerializer):
+class ProductRecommendSerializer(BaseProductSerializer):
 
     """ Product Detail Serializer Definition """
-
-    imgUrl = serializers.SerializerMethodField()
-
-    def get_imgUrl(self, obj):
-        thumbnail_url = getattr(settings, "THUMBNAIL_IMAGE_URL")
-        return f"{thumbnail_url}/{obj.image_id}.jpg"
 
     class Meta:
         model = Product
