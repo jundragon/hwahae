@@ -111,7 +111,7 @@ Content-Type: application/json
 | Parameter          | Type                        | Description                                           |
 | ------------------ | --------------------------- | ----------------------------------------------------- |
 | skin_type          | String                      | (필수) 지성(oily)/건성(dry)/민감성(sensitive) 중 택 1 |
-| category           | String (선택) 상품 카테고리 |
+| category           | String                      | (선택) 상품 카테고리                                  |
 | page               | Integer                     | (선택) 페이지 번호                                    |
 | exclude_ingredient | String                      | (선택) 제외해야 하는 성분 목록(콤마로 구분)           |
 | include_ingredient | String                      | (선택) 포함해야 하는 성분 목록(콤마로 구분)           |
