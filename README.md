@@ -4,6 +4,57 @@
 피부 타입마다 성분 기반으로 화장품을 추천해 주는 서비스의 API 구현
 ```
 
+## 프로젝트 구조
+
+```
+├── db.json
+├── hwahae_api
+│   ├── core                              # Time Stamped Model, Item Model 공통 추상화 모델
+│   ├── functional_tests                  # 기능 테스트
+│   ├── ingredients                       # 성분 app
+│   │   ├── fixtures                      # 성분 seed raw 데이터
+│   │   │   └── ingredient-data.json
+│   │   ├── management
+│   │   │   └── commands
+│   │   │       └── seed_ingredients.py   # 성분 seed raw 데이터 입력 커맨드
+│   │   ├── models.py
+│   ├── products                          # 상품 app
+│   │   ├── fixtures                      # 상품 seed raw 데이터
+│   │   │   └── item-data.json
+│   │   ├── management
+│   │   │   ├── commands
+│   │   │   │   └── seed_products.py      # 상품 seed raw 데이터 입력 커맨드
+│   │   ├── models.py
+│   │   ├── serializers.py
+│   │   ├── templates
+│   │   │   └── index.html
+│   │   ├── tests
+│   │   │   ├── test_models.py
+│   │   │   ├── test_product_detail_view.py
+│   │   │   ├── test_product_list_view.py
+│   │   │   └── test_serializers.py
+│   │   ├── urls.py
+│   │   └── views.py
+│   ├── settings                          # 개발, 상용 설정
+│   │   ├── base.py
+│   │   ├── local.py
+│   │   ├── production.py
+│   ├── static
+│   ├── urls.py
+│   └── wsgi.py
+├── manage.py
+├── 과제제출가이드.md
+├── Procfile
+├── README.md
+├── requirements
+│   ├── dev.txt
+│   └── production.txt
+├── requirements.txt
+├── runtime.txt
+└── scripts
+    └── dev_scripts.sh
+```
+
 ## Swagger
 
 ```
